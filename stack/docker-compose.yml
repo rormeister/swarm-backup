@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  swarm-backup:
+    image: rormeister/swarm-backup:latest@sha256:97c178d31e510439dc6ad531fcdd580a87148f38f62eff89d49ec93f8fa8aaef  # pinned 2026-09-27 (own image, no version tags)
+    environment:
+      - RCLONE_CONFIG=/rclone/rclone.conf
+    secrets:
+      - MYSQL_ROOT_PASSWORD
+      - INFLUXDB_TOKEN
+      - RESTIC_PASSWORD
+    volumes:
+      - /mnt/dockerswarmvol:/mnt/dockerswarmvol:ro
+      - /mnt/unraid-backup:/mnt/unraid-backup
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/hostname:/etc/hostname:ro
+      - /mnt/dockerswarmvol/swarm-backup/rclone-dir:/rclone
+      - /mnt/dockerswarmvol/swarm-backup/log:/var/log
+      - /mnt/dockerswarmvol/swarm-backup/backup-fixed.sh:/usr/local/bin/backup.sh:ro
+      - /mnt/dockerswarmvol/swarm-backup/start-fixed.sh:/start.sh:ro
+      - /mnt/dockerswarmvol/swarm-backup/bin/restic:/usr/local/bin/restic:ro
+    networks:
+      - default
+      - nginx_ingress
+    user: root
+    deploy:
+      mode: global
+    restart: unless-stopped
+
+networks:
+  default: {}
+  nginx_ingress:
+    external: true
+
+secrets:
+  MYSQL_ROOT_PASSWORD:
+    external: true
+    name: MYSQL_ROOT_PASSWORD_20260924
+  INFLUXDB_TOKEN:
+    external: true
+  RESTIC_PASSWORD:
+    external: true
+
+
+
+

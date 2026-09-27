@@ -1,0 +1,7 @@
+# Real file: /mnt/dockerswarmvol/swarm-backup/rclone-dir/rclone.conf (mounted at /rclone; NOT in git).
+# Create/refresh it with:  rclone config  (remote name must be "onedrive", see REMOTE_NAME in backup-fixed.sh)
+[onedrive]
+type = onedrive
+token = <oauth token json written by rclone config>
+drive_id = <drive id>
+drive_type = personal
