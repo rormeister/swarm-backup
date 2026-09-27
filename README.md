@@ -25,13 +25,15 @@ The image is pinned by digest in the stack; after a rebuild, update the digest t
 - `MYSQL_ROOT_PASSWORD`, `INFLUXDB_TOKEN`, `RESTIC_PASSWORD`: Docker Swarm
   secrets, read from `/run/secrets/*`.
 - rclone OneDrive token: `rclone-dir/rclone.conf` on Gluster.
-- **Kuma push tokens** (lines 241–243 of `backup-fixed.sh`) are `REDACTED_SEE_README` in git.
-  The production copy holds the real values; copy them from there (or from Kuma: push monitors
-  "swarm-0N Backup") when deploying from this repo.
+- **Kuma push tokens:** Swarm secret `KUMA_PUSH_TOKENS` (external name `KUMA_PUSH_TOKENS_20260927`),
+  one `<node-name>=<token>` line per node. The script picks its own line by hostname; a missing
+  secret or line logs `[!] No Uptime Kuma push token…` and skips the push. To rotate: create a new
+  secret with a new date suffix, point the stack at it, then remove the old one.
 
 ## Deploy
 
 1. Edit here, review `git diff`.
-2. Copy the scripts to `/mnt/dockerswarmvol/swarm-backup/` on any swarm node (Gluster), keeping the
-   production Kuma tokens.
+2. Copy the scripts to `/mnt/dockerswarmvol/swarm-backup/` on any swarm node (Gluster), **only while
+   no backup is running**. The files are bind-mounted and bash reads scripts as it runs, so overwrite
+   in place (`sudo cp`), which keeps the inode the mounts point at.
 3. Stack changes: update stack 21 through the Portainer API so Portainer stays in sync.

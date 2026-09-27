@@ -236,13 +236,9 @@ echo "[*] Swarm Backup completed: $(date)" | tee -a "$LOGFILE"
 # whichever node's weekly run finished last silently determined the status
 # shown for all three (a failure on one node could be masked by a later
 # success on another) - same class of bug already fixed in disk-checker.sh.
-# Each node now has its own Kuma push monitor.
-case "$NODE_NAME" in
-  docker-swarm-01) KUMA_PUSH_TOKEN=REDACTED_SEE_README ;;
-  docker-swarm-02) KUMA_PUSH_TOKEN=REDACTED_SEE_README ;;
-  docker-swarm-03) KUMA_PUSH_TOKEN=REDACTED_SEE_README ;;
-  *) KUMA_PUSH_TOKEN="" ;;
-esac
+# Each node now has its own Kuma push monitor. Tokens come from the Swarm
+# secret KUMA_PUSH_TOKENS, one "<node-name>=<token>" line per node.
+KUMA_PUSH_TOKEN="$(sed -n "s/^${NODE_NAME}=//p" /run/secrets/KUMA_PUSH_TOKENS 2>/dev/null | head -1 || true)"
 
 if [ -z "$KUMA_PUSH_TOKEN" ]; then
   echo "[!] No Uptime Kuma push token mapped for node '$NODE_NAME' - skipping push" | tee -a "$LOGFILE"

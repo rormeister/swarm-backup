@@ -9,6 +9,7 @@ services:
       - MYSQL_ROOT_PASSWORD
       - INFLUXDB_TOKEN
       - RESTIC_PASSWORD
+      - KUMA_PUSH_TOKENS
     volumes:
       - /mnt/dockerswarmvol:/mnt/dockerswarmvol:ro
       - /mnt/unraid-backup:/mnt/unraid-backup
@@ -40,6 +41,9 @@ secrets:
     external: true
   RESTIC_PASSWORD:
     external: true
+  KUMA_PUSH_TOKENS:
+    external: true
+    name: KUMA_PUSH_TOKENS_20260927
 
 
 
