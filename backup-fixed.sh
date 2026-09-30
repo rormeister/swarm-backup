@@ -243,7 +243,7 @@ KUMA_PUSH_TOKEN="$(sed -n "s/^${NODE_NAME}=//p" /run/secrets/KUMA_PUSH_TOKENS 2>
 if [ -z "$KUMA_PUSH_TOKEN" ]; then
   echo "[!] No Uptime Kuma push token mapped for node '$NODE_NAME' - skipping push" | tee -a "$LOGFILE"
 else
-  KUMA_PUSH_URL="http://uptime-kuma:3001/api/push/${KUMA_PUSH_TOKEN}"
+  KUMA_PUSH_URL="http://192.168.50.35:3001/api/push/${KUMA_PUSH_TOKEN}"
   FAILURE_COUNT=$(grep -c '^\[!\]' "$LOGFILE" || true)
   if [ "${FAILURE_COUNT:-0}" -eq 0 ]; then
     curl -fsS --max-time 10 "${KUMA_PUSH_URL}?status=up&msg=OK&ping=" >/dev/null 2>&1 \
